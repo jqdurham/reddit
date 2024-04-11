@@ -1,0 +1,32 @@
+linters-settings:
+  lll:
+    line-length: 140
+  nolintlint:
+    allow-unused: false
+    require-specific: true
+    require-explanation: true
+  varnamelen:
+    min-name-length: 2
+    ignore-decls:
+      - i int
+      - r *http.Request
+
+linters:
+  enable-all: true
+  disable:
+    - tagliatelle
+    - depguard
+    - gomnd
+    - exhaustruct
+    - wsl
+
+issues:
+  exclude-rules:
+    - path: (.+)_test.go
+      linters:
+        - funlen
+        - goconst
+        - varnamelen
+        - containedctx
+        - gochecknoglobals
+        - nlreturn
