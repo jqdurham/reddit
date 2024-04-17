@@ -7,7 +7,7 @@ import (
 )
 
 // Run executes provided Jobs perpetually, sending errors back to caller.
-func Run(ctx context.Context, errCh chan error, jobs ...Job) {
+func Run(ctx context.Context, errCh chan<- error, jobs ...Job) {
 	logr := logger.FromContext(ctx)
 
 	for i := range jobs {
