@@ -11,10 +11,11 @@ lint: ## run linters using golangci-lint configuration file (default lookup)
 	golangci-lint cache clean
 	golangci-lint run -v  ./...
 
-test: ## run tests, report code coverage (sans mocks) and check for race conditions
+tests: ## run tests, report code coverage (sans mocks) and check for race conditions
 	go test -race ./... -covermode=atomic -coverprofile=coverage.out.tmp
 	cat coverage.out.tmp | grep -v "/mocks" > coverage.out
 	go tool cover -func=coverage.out
+	rm coverage.out coverage.out.tmp
 
 run: ## run the app
 	CGO_ENABLED=0 go run cmd/reddit/main.go
