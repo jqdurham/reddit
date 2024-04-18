@@ -67,7 +67,7 @@ func (s *Service) UpdateTopNAuthors(ctx context.Context, subreddit string, num i
 		logr.Debug("update top n authors", "subreddit", subreddit, "dur", time.Since(start))
 	}()
 
-	counts, err := s.fetchTopAuthors(ctx, subreddit)
+	counts, err := s.fetchAuthorPostCounts(ctx, subreddit)
 	if err != nil {
 		return fmt.Errorf("fetch top authors: %v: %w", subreddit, err)
 	}
@@ -85,14 +85,12 @@ func (s *Service) UpdateTopNAuthors(ctx context.Context, subreddit string, num i
 	for i, author := range authors {
 		authorPosts = append(authorPosts, &AuthorPosts{Author: author, Qty: counts[author]})
 
-		if i > num {
+		if i+1 == num {
 			break
 		}
 	}
 
-	top := authorPosts[:min(num, len(authorPosts))]
-
-	err = s.write(fmt.Sprintf("Top %d Authors (%s)", num, subreddit), top)
+	err = s.write(fmt.Sprintf("Top %d Authors (%s)", num, subreddit), authorPosts)
 	if err != nil {
 		return fmt.Errorf("write: %w", err)
 	}
@@ -100,7 +98,7 @@ func (s *Service) UpdateTopNAuthors(ctx context.Context, subreddit string, num i
 	return nil
 }
 
-func (s *Service) fetchTopAuthors(ctx context.Context, subreddit string) (map[string]int, error) {
+func (s *Service) fetchAuthorPostCounts(ctx context.Context, subreddit string) (map[string]int, error) {
 	listings, err := s.client.FetchAllListings(ctx, "/r/"+subreddit)
 	if err != nil {
 		return nil, fmt.Errorf("fetch all listings: %w", err)

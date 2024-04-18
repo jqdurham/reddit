@@ -95,6 +95,28 @@ func TestService_UpdateTopNAuthors(t *testing.T) {
 				"(1) - John Doe \n\n",
 		},
 		{
+			name: "Writes top author only",
+			fields: fields{
+				client: func(t *testing.T) reddit.ListingFetcher {
+					t.Helper()
+					m := mocks.NewListingFetcher(t)
+					m.On("FetchAllListings", context.Background(),
+						"/r/cardinals").Return([]*reddit.Listing{testListing}, nil)
+
+					return m
+				},
+			},
+			args: args{
+				ctx:       context.Background(),
+				subreddit: "cardinals",
+				num:       1,
+			},
+			output: "\n" +
+				"Top 1 Authors (cardinals)\n" +
+				"--------------------------------------------------------------------------------\n" +
+				"(2) - Ozzie Smith \n\n",
+		},
+		{
 			name: "Handles fetcher error getting posts",
 			fields: fields{
 				client: func(t *testing.T) reddit.ListingFetcher {
