@@ -25,4 +25,7 @@ REDDIT_CLIENT_ID=123 \
 
 See `make help`.
 
+### Requirements
+
+See [requirements](./requirements.md).
 
